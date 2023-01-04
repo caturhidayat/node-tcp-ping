@@ -10,6 +10,7 @@ import { createWriteStream } from "fs";
 const host = ["192.168.1.3", "www.google.com", "www.codecademy.com"];
 const freq = 1000;
 
+// Date Config variable
 const tanggal = new Date().getDate();
 const bulan = new Date().getMonth() + 1;
 const tahun = new Date().getFullYear();
@@ -20,6 +21,14 @@ const fullDate = `${tanggal}${bulan}${tahun}`;
 // const fullJam     = `${jam}:${menit}:${detik}`
 const dir = `log/${tahun}/${bulan}`;
 
+
+// PING config
+const pingConfig = {
+  packetSize: 32,
+  timeout: 10
+}
+
+// PING Function
 host.forEach((host) => {
   setInterval(() => {
     // create dir if doesn't exist
@@ -31,8 +40,8 @@ host.forEach((host) => {
     // }).catch(console.error);
     ping.sys.probe(host, async (isAlive) => {
       let info = isAlive
-        ? `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getUTCSeconds()} - IP ${host} : 🆙 \r\n`
-        : `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()} - IP ${host} ❌ \r\n`;
+        ? `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getUTCSeconds()} - Reply from ${host} Byte:${pingConfig.packetSize} : 🆙 \r\n`
+        : `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()} Request Timed Out ❌ \r\n`;
       // console.info(info)
 
       // Append file
@@ -43,7 +52,7 @@ host.forEach((host) => {
 
       // Write Data
       const writeData = fs.writeFile(`${dir}/${new Date().getDate()}-${new Date().getMonth() +1 }-${new Date().getFullYear()}-${host}.log`, info, { flag: 'a'});
-    });
+    }, pingConfig);
   }, freq);
 });
 
